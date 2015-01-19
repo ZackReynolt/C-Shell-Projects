@@ -1,0 +1,60 @@
+#! /bin/csh
+
+set pfad = $HOME
+set extdatei = ""
+if ($#argv == 1) then
+else if ($#argv == 3) then
+	switch ("$argv[2]")
+		case "-f":
+			set extdatei = $argv[3]
+			breaksw
+		case "-p":
+			set pfad = $argv[3]
+			breaksw
+		default:
+			goto fehler
+	endsw
+else if ($#argv == 5) then
+	switch ("$argv[2]")
+		case "-f":
+			set extdatei = $argv[3]
+			breaksw
+		case "-p":
+			set pfad = $argv[3]
+			breaksw
+		default:
+			goto fehler
+	endsw
+	switch ("$argv[4]")
+		case "-f":
+			if ("$argv[2]" == "-f") goto fehler 
+			set extdatei = $argv[5]
+			breaksw
+		case "-p":
+			if ("$argv[2]" == "-p") goto fehler 
+			set pfad = $argv[5]
+			breaksw
+		default:
+			goto fehler
+	endsw
+else
+	goto fehler
+endif
+
+set datei = $argv[1]
+
+if ($extdatei == "") then
+	find "$pfad" -name "$datei"
+else
+	find "$pfad" -name "$datei" >& "$extdatei"
+	grep "$datei" < "$extdatei"
+endif
+
+
+exit 0
+
+
+
+fehler:
+echo "Syntax: suche datei [-f ausgabedatei] [-p pfad]"
+exit 1

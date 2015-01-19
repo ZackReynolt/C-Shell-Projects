@@ -1,0 +1,63 @@
+#! /bin/sh
+
+fehler() {
+	echo "Syntax: bsuch datei [-f ausgabedatei] [-p pfad]"
+	exit 1
+}
+
+pfad=$HOME
+extdatei=""
+if [ $# = 1 ]; then
+	:
+elif [ $# = 3 ]; then
+	case "$2" in
+		"-f")
+			extdatei=$3
+			;;
+		"-p")
+			pfad=$3
+			;;
+		*)
+			fehler
+	esac
+elif [ $# = 5 ]; then
+	case "$2" in
+		"-f")
+			extdatei=$3
+			;;
+		"-p")
+			pfad=$3
+			;;
+		*)
+			fehler
+	esac
+	case "$4" in
+		"-f")
+			[ "$2" = "-f" ] && fehler
+			extdatei=$5
+			;;
+		"-p")
+			[ "$2" = "-p" ] && fehler 
+			pfad=$5
+			;;
+		*)
+			fehler
+	esac
+else
+	fehler
+fi
+
+datei=$1
+
+if [ "$extdatei" = "" ]; then
+	find "$pfad" -name "$datei"
+else
+	find "$pfad" -name "$datei" > "$extdatei" 2> "$extdatei".errors
+	grep "$datei" < "$extdatei"
+fi
+
+
+exit 0
+
+
+

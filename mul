@@ -1,0 +1,45 @@
+#! /bin/csh
+
+if ($#argv > 0) then
+	set ergebnis = 1
+	foreach zahl ($argv)
+		@ ergebnis *= $zahl
+	end
+	echo $ergebnis
+else
+	nochmal:
+	set ergebnis = 1
+	set ergebnis_vorher = 1
+	while (1)
+		set eingabe = "$<"
+		switch ("$eingabe")
+			case [?]:
+				echo $ergebnis
+				breaksw
+			case [=]:
+				echo $ergebnis
+				exit
+				breaksw
+			case x:
+				set ergebnis = $ergebnis_vorher
+				breaksw
+			case n:
+				goto nochmal
+				breaksw
+			case q:
+				exit
+				breaksw
+			default:
+				if ("`echo '$eingabe' | grep \[^0-9\] `" == "") then
+					set ergebnis_vorher = $ergebnis
+					@ ergebnis *= $eingabe
+					if ($eingabe != 0 && $ergebnis / $eingabe != $ergebnis_vorher) then
+						echo "Zahlenbereich ueberschritten\!"
+						exit
+					endif
+				else
+					echo "Ungueltige Eingabe\!"
+				endif
+		endsw
+	end
+endif

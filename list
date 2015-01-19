@@ -1,0 +1,34 @@
+#! /bin/csh
+
+if ($#argv == 0) then
+	echo "filename? "
+	set filename = "$<"
+	if ($filename == "") set filename = "passwd"
+	echo "string? "
+	set string = "$<"
+else
+	set filename = $argv[1]
+	if ($#argv > 1) then
+		set string = $argv[2] 
+	else
+		echo "string? "
+		set string = "$<"
+	endif
+endif
+
+if ($filename == "passwd") then
+	if ($string != "") then
+		ypcat passwd | grep $string
+	else
+		ypcat passwd
+	endif
+else
+	if ($string != "") then
+		grep $string $filename
+	else
+		cat $filename
+	endif
+endif
+
+
+
